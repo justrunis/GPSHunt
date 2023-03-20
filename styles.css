@@ -1,0 +1,70 @@
+.ol-popup {
+    font-family: Arial, sans-serif;
+    font-size: 12px;
+    min-width: 150px;
+}
+
+.ol-popup:after,
+.ol-popup:before {
+    border-top: 1px solid #cccccc;
+    border-right: 1px solid #cccccc;
+    content: "";
+    display: block;
+    height: 10px;
+    position: absolute;
+    width: 10px;
+    z-index: -1;
+}
+
+.ol-popup:before {
+    border-bottom: none;
+    border-left: none;
+    bottom: 0;
+    left: -7px;
+    transform: rotateZ(45deg);
+}
+
+.ol-popup:after {
+    border-bottom: none;
+    border-left: none;
+    top: -7px;
+    right: 0;
+    transform: rotateZ(45deg);
+}
+
+.ol-popup-closer {
+    text-decoration: none;
+    position: absolute;
+    top: 2px;
+    right: 8px;
+}
+
+.ol-popup-closer:hover {
+    color: #6d6d6d;
+}
+
+.ol-popup-content {
+    display: flex;
+    align-items: center;
+}
+
+.ol-popup-content:before {
+    content: attr(data-coords);
+    font-weight: bold;
+    margin-right: 5px;
+}
+
+/* CSS for the coordinates table */
+#coordinates-table {
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+#coordinates-table td {
+    padding: 5px 10px;
+    border: 1px solid #ccc;
+}
+#coordinates-table td:first-child {
+    font-weight: bold;
+    text-align: right;
+    width: 50px;
+}
