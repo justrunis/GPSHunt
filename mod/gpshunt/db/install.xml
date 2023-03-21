@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<XMLDB PATH="mod/gpshunt/db" VERSION="20230320" COMMENT="XMLDB file for Moodle mod_gpshunt"
+<XMLDB PATH="mod/gpshunt/db" VERSION="20230321" COMMENT="XMLDB file for Moodle mod_gpshunt"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="../../../lib/xmldb/xmldb.xsd"
 >
@@ -13,12 +13,26 @@
         <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Timestamp of when the instance was last modified."/>
         <FIELD NAME="intro" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="Activity description."/>
         <FIELD NAME="introformat" TYPE="int" LENGTH="4" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="The format of the intro field."/>
-        <FIELD NAME="latitude" TYPE="number" LENGTH="10" NOTNULL="false" SEQUENCE="false" DECIMALS="8" COMMENT="Latitude of the answer location"/>
-        <FIELD NAME="longitude" TYPE="number" LENGTH="10" NOTNULL="false" SEQUENCE="false" DECIMALS="8" COMMENT="Longitude of the location"/>
+        <FIELD NAME="latitude" TYPE="number" LENGTH="11" NOTNULL="true" DEFAULT="0" SEQUENCE="false" DECIMALS="8" COMMENT="Latitude of the answer location"/>
+        <FIELD NAME="longitude" TYPE="number" LENGTH="11" NOTNULL="true" DEFAULT="0" SEQUENCE="false" DECIMALS="8" COMMENT="Longitude of the location"/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
         <KEY NAME="fk_course" TYPE="foreign" FIELDS="course" REFTABLE="course" REFFIELDS="id"/>
+      </KEYS>
+    </TABLE>
+    <TABLE NAME="gpshunt_user_locations" COMMENT="GPS hunt table that saves submited answers">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="userid" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Users id that submited the answer"/>
+        <FIELD NAME="gpshuntid" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="GPS hunts id that the answer is submited"/>
+        <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="time when answer is submited"/>
+        <FIELD NAME="latitude" TYPE="number" LENGTH="11" NOTNULL="true" DEFAULT="0" SEQUENCE="false" DECIMALS="8" COMMENT="submited answers latitude"/>
+        <FIELD NAME="longitude" TYPE="number" LENGTH="11" NOTNULL="true" DEFAULT="0" SEQUENCE="false" DECIMALS="8" COMMENT="submited answers longitude"/>
+        <FIELD NAME="correctanswer" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="1 or 0 if the answer is correct"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
       </KEYS>
     </TABLE>
   </TABLES>

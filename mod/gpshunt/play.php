@@ -44,10 +44,6 @@ if ($id) {
 
 require_login($course, true, $cm);
 
-if (!is_siteadmin()) {
-    redirect(new moodle_url('/mod/qrhunt/play.php', array('id' => $cm->id)));
-}
-
 $modulecontext = context_module::instance($cm->id);
 
 $event = \mod_gpshunt\event\course_module_viewed::create(array(
@@ -69,58 +65,35 @@ $latitude = 0;
 $longitude = 0;
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $latitude = $_POST["latitude"] ?? 0;
-    $longitude = $_POST["longitude"] ?? 0;
-}
-if (isset($_POST['latitudeCoords']) && isset($_POST['longitudeCoords'])) {
-    // Get the submitted answers.
-    $answerLatitude = $_POST["latitudeCoords"] ?? $latitude;
-    $answerLongitude = $_POST["longitudeCoords"] ?? $longitude;
+    $latitude = $_POST["userLatitude"] ?? 0;
+    $longitude = $_POST["userLongitude"] ?? 0;
 
-    // Update the answer field in the gpshunt table.
-    $update = new stdClass();
-    $update->id = $moduleInstance->id;
-    $update->latitude = $answerLatitude;
-    $update->longitude = $answerLongitude;
-    $DB->update_record('gpshunt', $update);
-    $moduleInstance = get_moduleinstance($id, $g);
+    var_dump($latitude);
+    var_dump($longitude);
+
+}
+if (isset($_POST['userLatitudeCoords']) && isset($_POST['userLongitudeCoords'])) {
+    // Get the submitted answers.
+    $answerLatitude = $_POST["userLatitudeCoords"];
+    $answerLongitude = $_POST["userLongitudeCoords"];
+
+    var_dump($answerLatitude);
+    var_dump($answerLongitude);
+
 }
 ?>
-
     <form method="post" action="">
-        <div id="map" style="width: 800px; height: 500px;"></div>
-        <input type="submit" value="Submit">
-        <input id="latitudeCoords" type="hidden" value="" name="latitudeCoords">
-        <input id="longitudeCoords" type="hidden" value="" name="longitudeCoords">
-        <table id="coordinates-table">
-            <tr>
-                <td>Latitude:</td>
-                <td id="latitude"><?php echo $moduleInstance->latitude; ?></td>
-            </tr>
-            <tr>
-                <td>Longitude:</td>
-                <td id="longitude"><?php echo $moduleInstance->longitude; ?></td>
-            </tr>
-            <tr>
-        </table>
+        <div id="mapid" style="width: 800px; height: 500px;"></div>
+        <input id="userLatitudeCoords" type="text" value="" name="userLatitudeCoords">
+        <input id="userLongitudeCoords" type="text" value="" name="userLongitudeCoords">
+        <!-- Leaflet CSS -->
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+        <!-- Leaflet JavaScript -->
+        <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+        <script src="JavaScript/userdisplaymap.js"></script>
+        <input type="submit" name="submit" value="Submit">
     </form>
 
-    <!-- Leaflet CSS -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
-
-    <!-- Leaflet JavaScript -->
-    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
-
-
-<script>
-    var coords = {
-        longitude:'<?php echo $moduleInstance->longitude?>',
-        latitude:'<?php echo $moduleInstance->latitude?>',
-    }
-</script>
-    <script src="JavaScript/admindisplaymap.js"></script>
-
 <?php
-button_to_play($cm);
 
 echo $OUTPUT->footer();

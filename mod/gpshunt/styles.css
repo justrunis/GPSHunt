@@ -62,9 +62,10 @@
 #coordinates-table td {
     padding: 5px 10px;
     border: 1px solid #ccc;
+    width: 50px;
 }
 #coordinates-table td:first-child {
     font-weight: bold;
-    text-align: right;
+    text-align: center;
     width: 50px;
 }
