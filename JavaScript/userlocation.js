@@ -29,6 +29,12 @@ function showPosition(position) {
     const latitude = position.coords.latitude;
     const longitude = position.coords.longitude;
     console.log(`Latitude: ${latitude}°, Longitude: ${longitude}°`);
+
+    document.getElementById('usersLatitude').textContent = latitude;
+    document.getElementById('usersLongitude').textContent = longitude;
+
+    document.getElementById('usersLatitudeCoords').value = latitude;
+    document.getElementById('usersLongitudeCoords').value = longitude;
 }
 
 function showError(error) {

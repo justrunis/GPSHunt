@@ -200,3 +200,54 @@ function gpshunt_update_grades($moduleinstance, $userid = 0) {
     $grades = array();
     grade_update('/mod/gpshunt', $moduleinstance->course, 'mod', 'mod_gpshunt', $moduleinstance->id, 0, $grades);
 }
+
+function button_to_play($cm) {
+    global $PAGE;
+
+    $url = new moodle_url('/mod/gpshunt/play.php', array('id' => $PAGE->cm->id));
+    $link_attributes = array(
+        'href' => $url->out(),
+        'class' => 'btn btn-dark',
+    );
+
+    echo html_writer::start_tag('a', $link_attributes);
+    echo get_string('play', 'mod_qrhunt');
+    echo html_writer::end_tag('a');
+}
+
+function get_moduleinstance($id, $g){
+    global $DB;
+    if ($id) {
+        $cm = get_coursemodule_from_id('gpshunt', $id, 0, false, MUST_EXIST);
+        $moduleinstance = $DB->get_record('gpshunt', array('id' => $cm->instance), '*', MUST_EXIST);
+    } else {
+        $moduleinstance = $DB->get_record('gpshunt', array('id' => $g), '*', MUST_EXIST);
+    }
+    return $moduleinstance;
+}
+
+function is_player_in_correct_location($correctLongitude, $correctLatitude, $playersLongitude, $playersLatitude, $maxDistance = 15) {
+    // check if input values are valid numbers
+    if (!is_numeric($correctLongitude) || !is_numeric($correctLatitude) || !is_numeric($playersLongitude) || !is_numeric($playersLatitude) || !is_numeric($maxDistance)) {
+        throw new InvalidArgumentException("Invalid input. Longitude and latitude values must be numeric.");
+    }
+
+    // check if input values are within valid range
+    if ($correctLongitude < -180 || $correctLongitude > 180 || $correctLatitude < -90 || $correctLatitude > 90 || $playersLongitude < -180 || $playersLongitude > 180 || $playersLatitude < -90 || $playersLatitude > 90 || $maxDistance <= 0) {
+        throw new InvalidArgumentException("Invalid input. Longitude must be between -180 and 180 degrees, latitude must be between -90 and 90 degrees, and max distance must be greater than 0 meters.");
+    }
+
+    $earthRadius = 6371000; // in meters
+    $lat1 = deg2rad($correctLatitude);
+    $lon1 = deg2rad($correctLongitude);
+    $lat2 = deg2rad($playersLatitude);
+    $lon2 = deg2rad($playersLongitude);
+    // Haversine formula
+    $deltaLat = $lat2 - $lat1;
+    $deltaLon = $lon2 - $lon1;
+    $a = sin($deltaLat/2) * sin($deltaLat/2) + cos($lat1) * cos($lat2) * sin($deltaLon/2) * sin($deltaLon/2);
+    $c = 2 * atan2(sqrt($a), sqrt(1-$a));
+    $distance = $earthRadius * $c;
+
+    return $distance <= $maxDistance;
+}
