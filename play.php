@@ -60,81 +60,68 @@ $PAGE->set_title(format_string($moduleInstance->name));
 $PAGE->set_heading(format_string($course->fullname));
 $PAGE->set_context($modulecontext);
 
+$latitude = 0;
+$longitude = 0;
+
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['userLatitudeCoords']) && isset($_POST['userLongitudeCoords'])) {
+    $latitude = $_POST["userLatitudeCoords"] ?? 0;
+    $longitude = $_POST["userLongitudeCoords"] ?? 0;
+
+    $correctLatitude = $moduleInstance->latitude;
+    $correctLongitude = $moduleInstance->longitude;
+
+    $iscorrect = is_player_in_correct_location($correctLongitude, $correctLatitude, $longitude,
+        $latitude, $maxDistance = 15);
+
+    // Update the answer field in the gpshunt table.
+    $update = new stdClass();
+
+    //$update->id = $moduleInstance->id;
+    $update->userid = $USER->id;
+    $update->timecreated = time();
+    $update->gpshuntid = $moduleInstance->id;
+    $update->latitude = $latitude;
+    $update->longitude = $longitude;
+
+    if($iscorrect){
+        // location is correct
+        $update->correctanswer = 1;
+        $DB->insert_record('gpshunt_user_locations', $update);
+        $moduleInstance = get_moduleinstance($id, $g);
+
+        $item = array(
+            'itemname' => $moduleInstance->name,
+            'gradetype' => GRADE_TYPE_VALUE,
+            'grademax' => 100,
+            'grademin' => 0
+        );
+
+        $grade = array(
+            'userid' => $USER->id,
+            'rawgrade' => 89,
+            'dategraded' => (new DateTime())->getTimestamp(),
+            'datesubmitted' => (new DateTime())->getTimestamp(),
+        );
+        $grades = [$USER->id => (object)$grade];
+        $itemid = grade_update('mod_gpshunt', $PAGE->course->id, 'mod', 'gpshunt', $moduleInstance->id, 0, $grades, $item);
+
+
+        // Redirect the user to the same page after the form has been submitted and answer is correct.
+        redirect($FULLME);
+        //reload_page();
+    }
+    else{
+        // location is not correct
+        $update->correctanswer = 0;
+        $DB->insert_record('gpshunt_user_locations', $update);
+        $moduleInstance = get_moduleinstance($id, $g);
+    }
+}
 echo $OUTPUT->header();
 
 if(!has_user_located_correctly($DB, $USER, $moduleInstance)){
-    $latitude = 0;
-    $longitude = 0;
-
-    if ($_SERVER["REQUEST_METHOD"] == "POST") {
-        $latitude = $_POST["userLatitudeCoords"] ?? 0;
-        $longitude = $_POST["userLongitudeCoords"] ?? 0;
-
-    }
-    if (isset($_POST['userLatitudeCoords']) && isset($_POST['userLongitudeCoords'])) {
-        // Get the submitted answers.
-        $userLatitude = $_POST["userLatitudeCoords"];
-        $userLongitude = $_POST["userLongitudeCoords"];
-
-
-        $correctLatitude = $moduleInstance->latitude;
-        $correctLongitude = $moduleInstance->longitude;
-
-        $iscorrect = is_player_in_correct_location($correctLongitude, $correctLatitude, $userLongitude,
-            $userLatitude, $maxDistance = 15);
-
-        // Update the answer field in the gpshunt table.
-        $update = new stdClass();
-
-        //$update->id = $moduleInstance->id;
-        $update->userid = $USER->id;
-        $update->timecreated = time();
-        $update->gpshuntid = $moduleInstance->id;
-        $update->latitude = $userLatitude;
-        $update->longitude = $userLongitude;
-
-        if($iscorrect){
-            // location is correct
-            $update->correctanswer = 1;
-            $DB->insert_record('gpshunt_user_locations', $update);
-            $moduleInstance = get_moduleinstance($id, $g);
-
-
-
-
-            $item = array(
-                'itemname' => 'GPS Hunt',
-                'gradetype' => GRADE_TYPE_VALUE,
-                'grademax' => 100,
-                'grademin' => 0
-            );
-
-            $itemid = grade_update('mod_gpshunt', $PAGE->course->id, 'mod', 'gpshunt', $moduleInstance->id, 0, null, $item);
-
-            $grade = array(
-                'userid' => $USER->id,
-                'rawgrade' => 10
-            );
-
-            $grade_item = grade_update('mod_assign', $PAGE->course->id, 'mod', 'assign', $moduleInstance->id, $USER->id, $grade);
-
-
-
-            // Redirect the user to the same page after the form has been submitted and answer is correct.
-            reload_page();
-        }
-        else{
-            // location is not correct
-            $update->correctanswer = 0;
-            $DB->insert_record('gpshunt_user_locations', $update);
-            $moduleInstance = get_moduleinstance($id, $g);
-
-            $_SESSION['message'] = get_string('incorrectlocation', 'mod_gpshunt');
-            if (isset($_SESSION['message'])) {
-                echo '<div class="alert alert-danger">' . $_SESSION['message'] . '</div>';
-                unset($_SESSION['message']);
-            }
-        }
+    if (isset($update) and $update->correctanswer == 0) {
+        echo '<div class="alert alert-danger">' . get_string('incorrectlocation', 'mod_gpshunt') . '</div>';
     }
     display_user_map_form($PAGE);
 }
