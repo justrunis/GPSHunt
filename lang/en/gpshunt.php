@@ -34,6 +34,9 @@ $string['gpshuntsettings'] = 'GPS Hunt settings';
 $string['gpshuntfieldset'] = 'GPS Hunt field set';
 $string['pluginadministration'] = 'Plugin administration';
 
+
+$string['modulenameicon'] = '<img src="'.$CFG->wwwroot.'/mod/gpshunt/pix/icon.svg" class="icon" alt="GPS icon" />';
+
 $string['play'] = 'Start game';
 $string['refreshlocation'] = 'Set location';
 
@@ -41,6 +44,7 @@ $string['latitude'] = 'Latitude';
 $string['longitude'] = 'Longitude';
 
 $string['incorrectlocation'] = 'Incorrect location';
+$string['correctlocation'] = 'Correct location press back to go back';
 $string['longitude'] = 'Longitude';
 
 $string['invalidinputnumeric'] = 'Invalid input. Longitude and latitude values must be numeric.';

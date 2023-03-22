@@ -344,12 +344,20 @@ function create_button_back_to_course($courseid) {
     echo html_writer::end_tag('a');
 }
 
-function reload_page(){
-    ?>
-    <script>
-        setTimeout(function() {
-            location.reload();
-        });
-    </script>
-    <?php
+function write_user_grade($moduleInstance, $USER, $PAGE, $rawgrade){
+    $item = array(
+        'itemname' => $moduleInstance->name,
+        'gradetype' => GRADE_TYPE_VALUE,
+        'grademax' => 100,
+        'grademin' => 0
+    );
+
+    $grade = array(
+        'userid' => $USER->id,
+        'rawgrade' => $rawgrade,
+        'dategraded' => (new DateTime())->getTimestamp(),
+        'datesubmitted' => (new DateTime())->getTimestamp(),
+    );
+    $grades = [$USER->id => (object)$grade];
+    $itemid = grade_update('mod_gpshunt', $PAGE->course->id, 'mod', 'gpshunt', $moduleInstance->id, 0, $grades, $item);
 }
