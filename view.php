@@ -77,7 +77,7 @@ if (isset($_POST['latitudeCoords']) && isset($_POST['longitudeCoords'])) {
     $answerLatitude = $_POST["latitudeCoords"] ?? $latitude;
     $answerLongitude = $_POST["longitudeCoords"] ?? $longitude;
 
-    // Update the answer field in the gpshunt table.
+    // Update the coordinates fields in the gpshunt table.
     $update = new stdClass();
     $update->id = $moduleInstance->id;
     $update->latitude = $answerLatitude;
@@ -85,42 +85,8 @@ if (isset($_POST['latitudeCoords']) && isset($_POST['longitudeCoords'])) {
     $DB->update_record('gpshunt', $update);
     $moduleInstance = get_moduleinstance($id, $g);
 }
-?>
 
-    <form method="post" action="">
-        <div id="map" style="width: 800px; height: 500px;"></div>
-        <input type="submit" value="Submit">
-        <input id="latitudeCoords" type="hidden" value="" name="latitudeCoords">
-        <input id="longitudeCoords" type="hidden" value="" name="longitudeCoords">
-        <table id="coordinates-table">
-            <tr>
-                <td>Latitude:</td>
-                <td id="latitude"><?php echo $moduleInstance->latitude; ?></td>
-            </tr>
-            <tr>
-                <td>Longitude:</td>
-                <td id="longitude"><?php echo $moduleInstance->longitude; ?></td>
-            </tr>
-            <tr>
-        </table>
-    </form>
-
-    <!-- Leaflet CSS -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
-
-    <!-- Leaflet JavaScript -->
-    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
-
-
-<script>
-    var coords = {
-        longitude:'<?php echo $moduleInstance->longitude?>',
-        latitude:'<?php echo $moduleInstance->latitude?>',
-    }
-</script>
-    <script src="JavaScript/admindisplaymap.js"></script>
-
-<?php
-button_to_play($cm);
+display_admin_map_form($moduleInstance, $cm);
+display_admin_map($moduleInstance);
 
 echo $OUTPUT->footer();

@@ -25,6 +25,7 @@
 require(__DIR__.'/../../config.php');
 require_once(__DIR__.'/lib.php');
 require_once("$CFG->dirroot/mod/gpshunt/lib.php");
+require_once($CFG->libdir . '/gradelib.php');
 
 // Course module id.
 $id = optional_param('id', 0, PARAM_INT);
@@ -61,39 +62,85 @@ $PAGE->set_context($modulecontext);
 
 echo $OUTPUT->header();
 
-$latitude = 0;
-$longitude = 0;
+if(!has_user_located_correctly($DB, $USER, $moduleInstance)){
+    $latitude = 0;
+    $longitude = 0;
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $latitude = $_POST["userLatitude"] ?? 0;
-    $longitude = $_POST["userLongitude"] ?? 0;
+    if ($_SERVER["REQUEST_METHOD"] == "POST") {
+        $latitude = $_POST["userLatitudeCoords"] ?? 0;
+        $longitude = $_POST["userLongitudeCoords"] ?? 0;
 
-    var_dump($latitude);
-    var_dump($longitude);
+    }
+    if (isset($_POST['userLatitudeCoords']) && isset($_POST['userLongitudeCoords'])) {
+        // Get the submitted answers.
+        $userLatitude = $_POST["userLatitudeCoords"];
+        $userLongitude = $_POST["userLongitudeCoords"];
 
+
+        $correctLatitude = $moduleInstance->latitude;
+        $correctLongitude = $moduleInstance->longitude;
+
+        $iscorrect = is_player_in_correct_location($correctLongitude, $correctLatitude, $userLongitude,
+            $userLatitude, $maxDistance = 15);
+
+        // Update the answer field in the gpshunt table.
+        $update = new stdClass();
+
+        //$update->id = $moduleInstance->id;
+        $update->userid = $USER->id;
+        $update->timecreated = time();
+        $update->gpshuntid = $moduleInstance->id;
+        $update->latitude = $userLatitude;
+        $update->longitude = $userLongitude;
+
+        if($iscorrect){
+            // location is correct
+            $update->correctanswer = 1;
+            $DB->insert_record('gpshunt_user_locations', $update);
+            $moduleInstance = get_moduleinstance($id, $g);
+
+
+
+
+            $item = array(
+                'itemname' => 'GPS Hunt',
+                'gradetype' => GRADE_TYPE_VALUE,
+                'grademax' => 100,
+                'grademin' => 0
+            );
+
+            $itemid = grade_update('mod_gpshunt', $PAGE->course->id, 'mod', 'gpshunt', $moduleInstance->id, 0, null, $item);
+
+            $grade = array(
+                'userid' => $USER->id,
+                'rawgrade' => 10
+            );
+
+            $grade_item = grade_update('mod_assign', $PAGE->course->id, 'mod', 'assign', $moduleInstance->id, $USER->id, $grade);
+
+
+
+            // Redirect the user to the same page after the form has been submitted and answer is correct.
+            reload_page();
+        }
+        else{
+            // location is not correct
+            $update->correctanswer = 0;
+            $DB->insert_record('gpshunt_user_locations', $update);
+            $moduleInstance = get_moduleinstance($id, $g);
+
+            $_SESSION['message'] = get_string('incorrectlocation', 'mod_gpshunt');
+            if (isset($_SESSION['message'])) {
+                echo '<div class="alert alert-danger">' . $_SESSION['message'] . '</div>';
+                unset($_SESSION['message']);
+            }
+        }
+    }
+    display_user_map_form($PAGE);
 }
-if (isset($_POST['userLatitudeCoords']) && isset($_POST['userLongitudeCoords'])) {
-    // Get the submitted answers.
-    $answerLatitude = $_POST["userLatitudeCoords"];
-    $answerLongitude = $_POST["userLongitudeCoords"];
-
-    var_dump($answerLatitude);
-    var_dump($answerLongitude);
-
+else{
+    echo '<div class="alert alert-success">' . "Correct location press back to go back" . '</div>';
+    create_button_back_to_course($PAGE->course->id);
 }
-?>
-    <form method="post" action="">
-        <div id="mapid" style="width: 800px; height: 500px;"></div>
-        <input id="userLatitudeCoords" type="text" value="" name="userLatitudeCoords">
-        <input id="userLongitudeCoords" type="text" value="" name="userLongitudeCoords">
-        <!-- Leaflet CSS -->
-        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
-        <!-- Leaflet JavaScript -->
-        <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
-        <script src="JavaScript/userdisplaymap.js"></script>
-        <input type="submit" name="submit" value="Submit">
-    </form>
-
-<?php
 
 echo $OUTPUT->footer();

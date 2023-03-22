@@ -30,9 +30,8 @@
  */
 function gpshunt_supports($feature) {
     switch ($feature) {
-        case FEATURE_GRADE_HAS_GRADE:
-            return true;
         case FEATURE_MOD_INTRO:
+        case FEATURE_GRADE_HAS_GRADE:
             return true;
         default:
             return null;
@@ -201,6 +200,67 @@ function gpshunt_update_grades($moduleinstance, $userid = 0) {
     grade_update('/mod/gpshunt', $moduleinstance->course, 'mod', 'mod_gpshunt', $moduleinstance->id, 0, $grades);
 }
 
+function display_admin_map_form($moduleInstance, $cm){
+    ?>
+    <form method="post" action="">
+        <div id="map" style="width: 800px; height: 500px;"></div>
+        <br>
+        <input class="btn btn-dark" type="submit" value="<?php echo get_string('refreshlocation', 'mod_gpshunt'); ?>">
+        <?php button_to_play($cm); ?>
+        <input id="latitudeCoords" type="hidden" value="" name="latitudeCoords">
+        <input id="longitudeCoords" type="hidden" value="" name="longitudeCoords">
+        <table id="coordinates-table">
+            <tr>
+                <td><?php echo get_string('latitude', 'mod_gpshunt'); ?></td>
+                <td id="latitude"><?php echo $moduleInstance->latitude; ?></td>
+            </tr>
+            <tr>
+                <td><?php echo get_string('longitude', 'mod_gpshunt'); ?></td>
+                <td id="longitude"><?php echo $moduleInstance->longitude; ?></td>
+            </tr>
+            <tr>
+        </table>
+    </form>
+    <?php
+}
+
+function display_admin_map($moduleInstance){
+    ?>
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+
+    <!-- Leaflet JavaScript -->
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+
+
+    <script>
+        var coords = {
+            longitude:'<?php echo $moduleInstance->longitude?>',
+            latitude:'<?php echo $moduleInstance->latitude?>',
+        }
+    </script>
+    <script src="JavaScript/admindisplaymap.js"></script>
+    <?php
+}
+
+function display_user_map_form($PAGE){
+    ?>
+    <form method="post" action="">
+        <div id="mapid" style="width: 800px; height: 500px;"></div>
+        <input id="userLatitudeCoords" type="hidden" value="" name="userLatitudeCoords">
+        <input id="userLongitudeCoords" type="hidden" value="" name="userLongitudeCoords">
+        <!-- Leaflet CSS -->
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+        <!-- Leaflet JavaScript -->
+        <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+        <script src="JavaScript/userdisplaymap.js"></script>
+        <br>
+        <input class="btn btn-dark" type="submit" name="submit" value="Submit location">
+        <?php     create_button_back_to_course($PAGE->course->id); ?>
+    </form>
+    <?php
+}
+
 function button_to_play($cm) {
     global $PAGE;
 
@@ -211,7 +271,7 @@ function button_to_play($cm) {
     );
 
     echo html_writer::start_tag('a', $link_attributes);
-    echo get_string('play', 'mod_qrhunt');
+    echo get_string('play', 'mod_gpshunt');
     echo html_writer::end_tag('a');
 }
 
@@ -228,13 +288,19 @@ function get_moduleinstance($id, $g){
 
 function is_player_in_correct_location($correctLongitude, $correctLatitude, $playersLongitude, $playersLatitude, $maxDistance = 15) {
     // check if input values are valid numbers
-    if (!is_numeric($correctLongitude) || !is_numeric($correctLatitude) || !is_numeric($playersLongitude) || !is_numeric($playersLatitude) || !is_numeric($maxDistance)) {
-        throw new InvalidArgumentException("Invalid input. Longitude and latitude values must be numeric.");
+    if (!is_numeric($correctLongitude) || !is_numeric($correctLatitude) ||
+        !is_numeric($playersLongitude) || !is_numeric($playersLatitude) ||
+        !is_numeric($maxDistance)) {
+        throw new InvalidArgumentException(get_string('invalidinputnumeric', 'mod_gpshunt'));
     }
 
     // check if input values are within valid range
-    if ($correctLongitude < -180 || $correctLongitude > 180 || $correctLatitude < -90 || $correctLatitude > 90 || $playersLongitude < -180 || $playersLongitude > 180 || $playersLatitude < -90 || $playersLatitude > 90 || $maxDistance <= 0) {
-        throw new InvalidArgumentException("Invalid input. Longitude must be between -180 and 180 degrees, latitude must be between -90 and 90 degrees, and max distance must be greater than 0 meters.");
+    if ($correctLongitude < -180 || $correctLongitude > 180 ||
+        $correctLatitude < -90 || $correctLatitude > 90 ||
+        $playersLongitude < -180 || $playersLongitude > 180 ||
+        $playersLatitude < -90 || $playersLatitude > 90 ||
+        $maxDistance <= 0) {
+        throw new InvalidArgumentException(get_string('invalidinputdegrees', 'mod_gpshunt'));
     }
 
     $earthRadius = 6371000; // in meters
@@ -250,4 +316,40 @@ function is_player_in_correct_location($correctLongitude, $correctLatitude, $pla
     $distance = $earthRadius * $c;
 
     return $distance <= $maxDistance;
+}
+
+
+function has_user_located_correctly($DB, $USER, $moduleinstance){
+    $records = $DB->get_records('gpshunt_user_locations', array('userid' => $USER->id));
+
+    foreach ($records as $record) {
+        if($record->correctanswer == 1 && $moduleinstance->id == $record->gpshuntid){
+            return true;
+        }
+    }
+    return false;
+}
+
+function create_button_back_to_course($courseid) {
+    global $CFG;
+
+    $url = new moodle_url('/course/view.php', array('id' => $courseid));
+    $link_attributes = array(
+        'href' => $url->out(),
+        'class' => 'btn btn-dark',
+    );
+
+    echo html_writer::start_tag('a', $link_attributes);
+    echo get_string('back', 'mod_qrhunt');
+    echo html_writer::end_tag('a');
+}
+
+function reload_page(){
+    ?>
+    <script>
+        setTimeout(function() {
+            location.reload();
+        });
+    </script>
+    <?php
 }

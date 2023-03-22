@@ -30,20 +30,25 @@ var marker = null;
 if (navigator.geolocation) {
     navigator.geolocation.watchPosition(function(position) {
         var latlng = L.latLng(position.coords.latitude, position.coords.longitude);
+        var latitude = position.coords.latitude;
+        var longitude = position.coords.longitude;
+
         if (marker) {
             mymap.removeLayer(marker);
         }
         marker = L.marker(latlng).addTo(mymap);
         mymap.setView(latlng, 18);
-        console.log("Latitude: " + position.coords.latitude + ", Longitude: " + position.coords.longitude);
+        console.log("Latitude: " + latitude + ", Longitude: " + longitude);
 
         // set the clicked coordinates to the table cells
-        document.getElementById('userLatitude').textContent = position.coords.latitude;
-        document.getElementById('userLongitude').textContent = position.coords.longitude;
+        //document.getElementById('userLatitude').textContent = latitude;
+        //document.getElementById('userLongitude').textContent = longitude;
+        //console.log("Latitude2: " + latitude + ", Longitude2: " + longitude);
 
         // send the clicked coordinates to php
-        document.getElementById('userLatitudeCoords').value = position.coords.latitude;
-        document.getElementById('userLongitudeCoords').value = position.coords.longitude;
+        document.getElementById('userLatitudeCoords').value = latitude;
+        document.getElementById('userLongitudeCoords').value = longitude;
+        console.log("Latitude2: " + latitude + ", Longitude2: " + longitude);
     });
 } else {
     // fallback if geolocation is not available

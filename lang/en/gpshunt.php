@@ -33,3 +33,15 @@ $string['gpshuntname_help'] = 'Type a name for this GPS hunt activity';
 $string['gpshuntsettings'] = 'GPS Hunt settings';
 $string['gpshuntfieldset'] = 'GPS Hunt field set';
 $string['pluginadministration'] = 'Plugin administration';
+
+$string['play'] = 'Start game';
+$string['refreshlocation'] = 'Set location';
+
+$string['latitude'] = 'Latitude';
+$string['longitude'] = 'Longitude';
+
+$string['incorrectlocation'] = 'Incorrect location';
+$string['longitude'] = 'Longitude';
+
+$string['invalidinputnumeric'] = 'Invalid input. Longitude and latitude values must be numeric.';
+$string['invalidinputdegrees'] = 'Invalid input. Longitude must be between -180 and 180 degrees, latitude must be between -90 and 90 degrees, and max distance must be greater than 0 meters.';

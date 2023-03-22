@@ -24,7 +24,7 @@ var marker;
 
 var map = L.map('map').setView(
     Number(coords.latitude) ?  [coords.latitude, coords.longitude] : [54.89, 23.90],
-    Number(coords.latitude) ? 15 : 7
+    Number(coords.latitude) ? 18 : 7
 );
 
 if (Number(coords.latitude)){
