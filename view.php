@@ -45,7 +45,7 @@ if ($id) {
 require_login($course, true, $cm);
 
 if (!is_siteadmin()) {
-    redirect(new moodle_url('/mod/qrhunt/play.php', array('id' => $cm->id)));
+    redirect(new moodle_url('/mod/gpshunt/play.php', array('id' => $cm->id)));
 }
 
 $modulecontext = context_module::instance($cm->id);
