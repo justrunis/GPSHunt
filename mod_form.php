@@ -66,10 +66,10 @@ class mod_gpshunt_mod_form extends moodleform_mod {
             $this->add_intro_editor();
         }
 
-        // Adding the rest of mod_gpshunt settings, spreading all them into this fieldset
-        // ... or adding more fieldsets ('header' elements) if needed for better logic.
-        $mform->addElement('static', 'label1', 'gpshuntsettings', get_string('gpshuntsettings', 'mod_gpshunt'));
-        $mform->addElement('header', 'gpshuntfieldset', get_string('gpshuntfieldset', 'mod_gpshunt'));
+        $mform->addElement('text', 'precision_field', get_string('gpshuntprecision', 'mod_gpshunt'), array('size' => '10'));
+        $mform->setType('precision_field', PARAM_INT);
+        $mform->setDefault('precision_field', 15); // Set default value
+        $mform->addHelpButton('precision_field', 'gpshuntprecision', 'mod_gpshunt');
 
         // Add standard grading elements.
         $this->standard_grading_coursemodule_elements();

@@ -89,7 +89,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['userLatitudeCoords']) 
         $moduleInstance = get_moduleinstance($id, $g);
         $rawgrade = 100;
 
-        write_user_grade($moduleInstance, $USER, $PAGE, $rawgrade);
+        write_gpshunt_user_grade($moduleInstance, $USER, $PAGE, $rawgrade);
 
         // Redirect the user to the same page after the form has been submitted and answer is correct.
         redirect($FULLME);
