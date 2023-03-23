@@ -200,6 +200,36 @@ function gpshunt_update_grades($moduleinstance, $userid = 0) {
     grade_update('/mod/gpshunt', $moduleinstance->course, 'mod', 'mod_gpshunt', $moduleinstance->id, 0, $grades);
 }
 
+function display_precision_submit_form($moduleinstance){
+    global $DB;
+
+    // Get existing precision value from database
+    $gpshunt = $DB->get_record('gpshunt', array('id' => $moduleinstance->id));
+    $precision = $gpshunt->precisionvalue;
+
+    // Check if form submitted
+    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['precision']) && $precision !== $_POST['precision']) {
+
+        // Get submitted value
+        $precision = $_POST['precision'];
+
+        // Update database table
+        $update = new stdClass();
+        $update->id = $moduleinstance->id;
+        $update->precisionvalue = $precision;
+        $DB->update_record('gpshunt', $update);
+
+        echo "<div class='alert alert-success' role='alert'>". "Change successfuly"."</div>";
+    }
+
+    // Display form with existing precision value
+    echo "<form method='post'>";
+    echo "<label for='precision'>Precision:</label>";
+    echo "<input type='number' name='precision' value='$precision'>";
+    echo "<button type='submit'>Update Precision</button>";
+    echo "</form>";
+}
+
 function display_admin_map_form($moduleInstance, $cm){
     ?>
     <form method="post" action="">

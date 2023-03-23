@@ -70,8 +70,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['userLatitudeCoords']) 
     $correctLatitude = $moduleInstance->latitude;
     $correctLongitude = $moduleInstance->longitude;
 
+    // Get existing precision value from database
+    $gpshunt = $DB->get_record('gpshunt', array('id' => $moduleInstance->id));
+    $precision = $gpshunt->precisionvalue;
+
     $iscorrect = is_player_in_correct_location($correctLongitude, $correctLatitude, $longitude,
-        $latitude, $maxDistance = 15);
+        $latitude, $precision);
 
     // Update the answer field in the gpshunt table.
     $update = new stdClass();

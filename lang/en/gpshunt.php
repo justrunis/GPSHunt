@@ -33,8 +33,6 @@ $string['gpshuntname_help'] = 'Type a name for this GPS hunt activity';
 $string['gpshuntsettings'] = 'GPS Hunt settings';
 $string['gpshuntfieldset'] = 'GPS Hunt field set';
 $string['pluginadministration'] = 'Plugin administration';
-$string['gpshuntprecision'] = 'Location precision';
-$string['gpshuntprecision_help'] = 'Enter how far a person can be from the original marker in meters';
 
 
 $string['modulenameicon'] = '<img src="'.$CFG->wwwroot.'/mod/gpshunt/pix/icon.svg" class="icon" alt="GPS icon" />';

@@ -87,6 +87,7 @@ if (isset($_POST['latitudeCoords']) && isset($_POST['longitudeCoords'])) {
 }
 
 display_admin_map_form($moduleInstance, $cm);
+display_precision_submit_form($moduleInstance);
 display_admin_map($moduleInstance);
 
 echo $OUTPUT->footer();

@@ -117,5 +117,33 @@ function xmldb_gpshunt_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2023032022, 'gpshunt');
     }
 
+    if ($oldversion < 2023032301) {
+
+        // Define field precision to be added to gpshunt.
+        $table = new xmldb_table('gpshunt');
+        $field = new xmldb_field('precision', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '15', 'longitude');
+
+        // Conditionally launch add field precision.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Gpshunt savepoint reached.
+        upgrade_mod_savepoint(true, 2023032301, 'gpshunt');
+    }
+
+    if ($oldversion < 2023032305) {
+
+        // Rename field precisionvalue on table gpshunt to NEWNAMEGOESHERE.
+        $table = new xmldb_table('gpshunt');
+        $field = new xmldb_field('precision', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '15', 'longitude');
+
+        // Launch rename field precisionvalue.
+        $dbman->rename_field($table, $field, 'precisionvalue');
+
+        // Gpshunt savepoint reached.
+        upgrade_mod_savepoint(true, 2023032305, 'gpshunt');
+    }
+
     return true;
 }

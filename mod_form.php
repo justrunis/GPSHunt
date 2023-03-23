@@ -66,11 +66,6 @@ class mod_gpshunt_mod_form extends moodleform_mod {
             $this->add_intro_editor();
         }
 
-        $mform->addElement('text', 'precision_field', get_string('gpshuntprecision', 'mod_gpshunt'), array('size' => '10'));
-        $mform->setType('precision_field', PARAM_INT);
-        $mform->setDefault('precision_field', 15); // Set default value
-        $mform->addHelpButton('precision_field', 'gpshuntprecision', 'mod_gpshunt');
-
         // Add standard grading elements.
         $this->standard_grading_coursemodule_elements();
 
