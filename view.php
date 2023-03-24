@@ -77,16 +77,47 @@ if (isset($_POST['latitudeCoords']) && isset($_POST['longitudeCoords'])) {
     $answerLatitude = $_POST["latitudeCoords"] ?? $latitude;
     $answerLongitude = $_POST["longitudeCoords"] ?? $longitude;
 
-    // Update the coordinates fields in the gpshunt table.
-    $update = new stdClass();
-    $update->id = $moduleInstance->id;
-    $update->latitude = $answerLatitude;
-    $update->longitude = $answerLongitude;
-    $DB->update_record('gpshunt', $update);
-    $moduleInstance = get_moduleinstance($id, $g);
+    if ($answerLatitude != "" && $answerLongitude != "") {
+        // Update the coordinates fields in the gpshunt table.
+        $update = new stdClass();
+        $update->id = $moduleInstance->id;
+        $update->latitude = $answerLatitude;
+        $update->longitude = $answerLongitude;
+        $update->timemodified = time();
+        $result = $DB->update_record('gpshunt', $update);
+        $moduleInstance = get_moduleinstance($id, $g);
+
+        if ($result) {
+            echo "<div class='alert alert-success' role='alert'>" . get_string('locationsuccess', 'mod_gpshunt') . "</div>";
+        } else {
+            echo "<div class='alert alert-danger' role='alert'>" . get_string('locationerror', 'mod_gpshunt') . "</div>";
+        }
+    } else {
+        // Display an error message if the submitted coordinates are (0,0)
+        echo "<div class='alert alert-danger' role='alert'>". get_string('invalidcoordinates', 'mod_gpshunt')."</div>";
+    }
+}
+// Check if form submitted
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['precision'])) {
+
+    try {
+        // Get submitted value
+        $precision = $_POST['precision'];
+
+        // Update database table
+        $update = new stdClass();
+        $update->id = $moduleInstance->id;
+        $update->precisionvalue = $precision;
+        $update->timemodified = time();
+        $DB->update_record('gpshunt', $update);
+
+        echo "<div class='alert alert-success' role='alert'>". get_string('precisionsuccess', 'mod_gpshunt', $precision) ."</div>";
+    } catch (Exception $e) {
+        echo "<div class='alert alert-danger' role='alert'>". $e->getMessage() ."</div>";
+    }
 }
 
-display_admin_map_form($moduleInstance, $cm);
+display_admin_map_form($moduleInstance, $cm, $PAGE);
 display_precision_submit_form($moduleInstance);
 display_admin_map($moduleInstance);
 

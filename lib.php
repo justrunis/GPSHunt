@@ -207,36 +207,78 @@ function display_precision_submit_form($moduleinstance){
     $gpshunt = $DB->get_record('gpshunt', array('id' => $moduleinstance->id));
     $precision = $gpshunt->precisionvalue;
 
-    // Check if form submitted
-    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['precision']) && $precision !== $_POST['precision']) {
-
-        // Get submitted value
-        $precision = $_POST['precision'];
-
-        // Update database table
-        $update = new stdClass();
-        $update->id = $moduleinstance->id;
-        $update->precisionvalue = $precision;
-        $DB->update_record('gpshunt', $update);
-
-        echo "<div class='alert alert-success' role='alert'>". "Change successfuly"."</div>";
-    }
-
     // Display form with existing precision value
-    echo "<form method='post'>";
-    echo "<label for='precision'>Precision:</label>";
-    echo "<input type='number' name='precision' value='$precision'>";
-    echo "<button type='submit'>Update Precision</button>";
-    echo "</form>";
+    $form_attributes = array(
+        'method' => 'post'
+    );
+
+    $input_attributes = array(
+        'type' => 'number',
+        'name' => 'precision',
+        'value' => $precision,
+        'class' => 'form-control'
+    );
+
+    $submit_attributes = array(
+        'type' => 'submit',
+        'name' => 'submit_precision',
+        'value' => get_string('updateprecision', 'mod_gpshunt'),
+        'class' => 'btn btn-dark',
+        'style' => 'margin-right: 15px'
+    );
+
+    $wrapper_attributes = array(
+        'class' => 'my-form-wrapper float-left',
+        'style' => 'width: 10%; margin-top: 20px;'
+    );
+
+    $label_div_attributes = array(
+        'class' => 'mb-2 font-weight: bold'
+    );
+
+    $input_div_attributes = array(
+        'class' => 'input-group mb-3',
+        'style' => 'max-width: 300px'
+    );
+
+    $button_div_attributes = array(
+        'class' => 'mb-3 mr-2'
+    );
+
+    $helper_button_atributes = array(
+        'type' => 'button',
+        'class' => 'btn btn-link p-0 ml-2 align-self-center',
+        'data-toggle' => 'popover',
+        'data-placement' => 'top',
+        'data-content' => get_string('updateprecision_help', 'mod_gpshunt'),
+        'aria-label' => 'Help',
+        'style' => 'background-color: transparent; border: none;'
+    );
+
+    echo html_writer::start_tag('div', $wrapper_attributes);
+    echo html_writer::start_tag('form', $form_attributes);
+    echo html_writer::start_tag('div', $label_div_attributes);
+    echo html_writer::label(get_string('locationprecision', 'mod_gpshunt'), 'precision');
+    echo html_writer::end_tag('div');
+    echo html_writer::start_tag('div', $input_div_attributes);
+    echo html_writer::empty_tag('input', $input_attributes);
+    echo html_writer::tag('button', '<i class="icon fa fa-question-circle text-info fa-fw"></i>', $helper_button_atributes);
+    echo html_writer::end_tag('div');
+    echo html_writer::start_tag('div', $button_div_attributes);
+    echo html_writer::empty_tag('input', $submit_attributes);
+    echo html_writer::end_tag('div');
+    echo html_writer::end_tag('form');
+    echo html_writer::end_tag('div');
 }
 
-function display_admin_map_form($moduleInstance, $cm){
+function display_admin_map_form($moduleInstance, $cm, $PAGE){
     ?>
     <form method="post" action="">
         <div id="map" style="width: 800px; height: 500px;"></div>
         <br>
         <input class="btn btn-dark" type="submit" value="<?php echo get_string('refreshlocation', 'mod_gpshunt'); ?>">
         <?php button_to_play($cm); ?>
+        <?php     create_button_back_to_course($PAGE->course->id); ?>
         <input id="latitudeCoords" type="hidden" value="" name="latitudeCoords">
         <input id="longitudeCoords" type="hidden" value="" name="longitudeCoords">
         <table id="coordinates-table">
@@ -286,7 +328,11 @@ function display_user_map_form($PAGE){
         <script src="JavaScript/userdisplaymap.js"></script>
         <br>
         <input class="btn btn-dark" type="submit" name="submit" value="Submit location">
-        <?php     create_button_back_to_course($PAGE->course->id); ?>
+        <?php       create_button_back_to_course($PAGE->course->id);
+        if (is_siteadmin()) {
+            create_button_back_to_view($_GET['id']);
+        }
+        ?>
     </form>
     <?php
 }
@@ -333,7 +379,7 @@ function is_player_in_correct_location($correctLongitude, $correctLatitude, $pla
         throw new InvalidArgumentException(get_string('invalidinputdegrees', 'mod_gpshunt'));
     }
 
-    $earthRadius = 6371000; // in meters
+    $earthRadius = 6371000; // Earth radius in meters
     $lat1 = deg2rad($correctLatitude);
     $lon1 = deg2rad($correctLongitude);
     $lat2 = deg2rad($playersLatitude);
@@ -370,11 +416,35 @@ function create_button_back_to_course($courseid) {
     );
 
     echo html_writer::start_tag('a', $link_attributes);
-    echo get_string('back', 'mod_qrhunt');
+    echo get_string('backtostart', 'mod_gpshunt');
+    echo html_writer::end_tag('a');
+}
+
+function create_button_back_to_view($itemid) {
+    global $CFG;
+
+    $url = new moodle_url('/mod/gpshunt/view.php', array('id' => $itemid));
+    $link_attributes = array(
+        'href' => $url->out(),
+        'class' => 'btn btn-dark',
+        'style' => 'margin-left: 5px'
+    );
+
+    echo html_writer::start_tag('a', $link_attributes);
+    echo get_string('backtoview', 'mod_gpshunt');
     echo html_writer::end_tag('a');
 }
 
 function write_gpshunt_user_grade($moduleInstance, $USER, $PAGE, $rawgrade){
+
+    if (!is_object($moduleInstance) || !is_object($USER) || !is_object($PAGE)) {
+        throw new InvalidArgumentException(get_string('invalidinputparameters','mod_gpshunt'));
+    }
+
+    if (!is_numeric($rawgrade) || $rawgrade < 0 || $rawgrade > 100) {
+        throw new InvalidArgumentException(get_string('invalidgradevalue','mod_gpshunt'));
+    }
+
     $item = array(
         'itemname' => $moduleInstance->name,
         'gradetype' => GRADE_TYPE_VALUE,
@@ -388,6 +458,8 @@ function write_gpshunt_user_grade($moduleInstance, $USER, $PAGE, $rawgrade){
         'dategraded' => (new DateTime())->getTimestamp(),
         'datesubmitted' => (new DateTime())->getTimestamp(),
     );
+
     $grades = [$USER->id => (object)$grade];
-    $itemid = grade_update('mod_gpshunt', $PAGE->course->id, 'mod', 'gpshunt', $moduleInstance->id, 0, $grades, $item);
+
+    grade_update('mod_gpshunt', $PAGE->course->id, 'mod', 'gpshunt', $moduleInstance->id, 0, $grades, $item);
 }

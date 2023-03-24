@@ -58,14 +58,39 @@
 #coordinates-table {
     border-collapse: collapse;
     margin-top: 20px;
+    width: 15%;
+    max-width: 600px;
+    background-color: #fff;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
 }
+
 #coordinates-table td {
-    padding: 5px 10px;
+    padding: 10px;
     border: 1px solid #ccc;
-    width: 50px;
+    text-align: center;
+    width: 10%;
 }
+
 #coordinates-table td:first-child {
     font-weight: bold;
-    text-align: center;
-    width: 50px;
+    width: 5%;
+    text-align: left;
+    background-color: #f7f7f7;
+}
+
+#coordinates-table td:last-child {
+    width: 5%;
+    text-align: right;
+}
+
+#coordinates-table tr:last-child td {
+    border-bottom: none;
+}
+
+#coordinates-table td:first-child:hover {
+    background-color: #FFFFFF;
+}
+#coordinates-table td:last-child:hover {
+    background-color: #f7f7f7;
 }

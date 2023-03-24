@@ -116,6 +116,9 @@ if(!has_user_located_correctly($DB, $USER, $moduleInstance)){
 else{
     echo '<div class="alert alert-success">' . get_string('correctlocation', 'mod_gpshunt') . '</div>';
     create_button_back_to_course($PAGE->course->id);
+    if (is_siteadmin()) {
+        create_button_back_to_view($_GET['id']);
+    }
 }
 
 echo $OUTPUT->footer();

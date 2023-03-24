@@ -25,7 +25,7 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; OpenStreetMap contributors'
 }).addTo(mymap);
 
-var marker = null;
+var circle = null;
 
 if (navigator.geolocation) {
     navigator.geolocation.watchPosition(function(position) {
@@ -33,22 +33,43 @@ if (navigator.geolocation) {
         var latitude = position.coords.latitude;
         var longitude = position.coords.longitude;
 
-        if (marker) {
-            mymap.removeLayer(marker);
+        if (circle) {
+            mymap.removeLayer(circle);
         }
-        marker = L.marker(latlng).addTo(mymap);
+        circle = L.circleMarker(latlng, {
+            radius: 8,
+            color: '#000000',
+            fillColor: '#3388ff',
+            weight: 1,
+            opacity: 1,
+            fillOpacity: 0.8,
+            clickable: true
+        }).addTo(mymap);
+
+        circle.on('click', function(e) {
+            var userLatitude = e.latlng.lat.toFixed(4);
+            var userLongitude = e.latlng.lng.toFixed(4);
+            var popup = L.popup()
+                .setLatLng(latlng)
+                .setContent("Latitude: " + userLatitude + ", Longitude: " + userLongitude)
+                .openOn(mymap);
+        });
+        circle.on('dblclick', function(e) {
+            var userLatitude = e.latlng.lat.toFixed(4);
+            var userLongitude = e.latlng.lng.toFixed(4);
+            var popup = L.popup()
+                .setLatLng(latlng)
+                .setContent("Latitude: " + userLatitude + ", Longitude: " + userLongitude)
+                .openOn(mymap);
+            mymap.setView(latlng, 18); // Zoom in to level 18
+        });
+
         mymap.setView(latlng, 18);
         console.log("Latitude: " + latitude + ", Longitude: " + longitude);
-
-        // set the clicked coordinates to the table cells
-        //document.getElementById('userLatitude').textContent = latitude;
-        //document.getElementById('userLongitude').textContent = longitude;
-        //console.log("Latitude2: " + latitude + ", Longitude2: " + longitude);
 
         // send the clicked coordinates to php
         document.getElementById('userLatitudeCoords').value = latitude;
         document.getElementById('userLongitudeCoords').value = longitude;
-        console.log("Latitude2: " + latitude + ", Longitude2: " + longitude);
     });
 } else {
     // fallback if geolocation is not available
