@@ -94,3 +94,26 @@
 #coordinates-table td:last-child:hover {
     background-color: #f7f7f7;
 }
+
+#map{
+    width: 800px;
+    height: 500px;
+}
+#mapid{
+    width: 800px;
+    height: 500px;
+}
+
+@media only screen and (max-width: 768px) {
+    #map{
+        max-width: 90vw;
+        max-height: 90vw;
+    }
+    #mapid{
+        max-width: 90vw;
+        max-height: 90vw;
+    }
+    #back-to-view{
+        margin-top: 10px;
+    }
+}

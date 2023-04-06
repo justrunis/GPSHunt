@@ -274,7 +274,7 @@ function display_precision_submit_form($moduleinstance){
 function display_admin_map_form($moduleInstance, $cm, $PAGE){
     ?>
     <form method="post" action="">
-        <div id="map" style="width: 800px; height: 500px;"></div>
+        <div id="map"></div>
         <br>
         <input class="btn btn-dark" type="submit" value="<?php echo get_string('refreshlocation', 'mod_gpshunt'); ?>">
         <?php button_to_play($cm); ?>
@@ -318,7 +318,7 @@ function display_admin_map($moduleInstance){
 function display_user_map_form($PAGE){
     ?>
     <form method="post" action="">
-        <div id="mapid" style="width: 800px; height: 500px;"></div>
+        <div id="mapid"></div>
         <input id="userLatitudeCoords" type="hidden" value="" name="userLatitudeCoords">
         <input id="userLongitudeCoords" type="hidden" value="" name="userLongitudeCoords">
         <!-- Leaflet CSS -->
@@ -426,8 +426,9 @@ function create_button_back_to_view($itemid) {
     $url = new moodle_url('/mod/gpshunt/view.php', array('id' => $itemid));
     $link_attributes = array(
         'href' => $url->out(),
-        'class' => 'btn btn-dark',
-        'style' => 'margin-left: 5px'
+        'class' => 'btn btn-dark margin-top: 5px',
+        'style' => 'margin-left: 5px;',
+        'id' => 'back-to-view'
     );
 
     echo html_writer::start_tag('a', $link_attributes);
