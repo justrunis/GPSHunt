@@ -55,6 +55,7 @@ $string['precisionsuccess'] = 'Precision has been successfully changed';
 $string['updateprecision_help'] = 'Enter a precision distance that determines how far the user can be from the original location in meters';
 
 $string['submitlocationheading'] = 'Submit your location for GPS hunt game';
+$string['submitlocation'] = 'Submit location';
 $string['incorrectlocation'] = 'Incorrect location please try again';
 $string['nolocationset'] = 'No location is set';
 $string['correctlocation'] = 'Correct location press back to go back';

@@ -223,7 +223,7 @@ function display_precision_submit_form($moduleinstance){
         'type' => 'submit',
         'name' => 'submit_precision',
         'value' => get_string('updateprecision', 'mod_gpshunt'),
-        'class' => 'btn btn-primary',
+        'class' => 'btn btn-success',
         'style' => 'margin-right: 15px'
     );
 
@@ -276,7 +276,7 @@ function display_admin_map_form($moduleInstance, $cm, $PAGE){
     <form method="post" action="">
         <div id="map"></div>
         <br>
-        <input class="btn btn-primary" type="submit" value="<?php echo get_string('refreshlocation', 'mod_gpshunt'); ?>">
+        <input class="btn btn-success" type="submit" value="<?php echo get_string('refreshlocation', 'mod_gpshunt'); ?>">
         <?php button_to_play($cm); ?>
         <?php     create_button_back_to_course($PAGE->course->id); ?>
         <input id="latitudeCoords" type="hidden" value="" name="latitudeCoords">
@@ -328,8 +328,9 @@ function display_user_map_form($PAGE){
         <script src="JavaScript/userdisplaymap.js"></script>
         <br>
         <div id="user-buttons">
-        <input class="btn btn-primary" type="submit" name="submit" value="Submit location">
-        <?php       create_button_back_to_course($PAGE->course->id);
+            <input class="btn btn-success" type="submit" name="submit"
+                   value="<?php echo (get_string('submitlocation', 'mod_gpshunt'));?>">
+            <?php       create_button_back_to_course($PAGE->course->id);
         if (is_siteadmin()) {
             create_button_back_to_view($_GET['id']);
         }

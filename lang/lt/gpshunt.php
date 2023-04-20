@@ -55,6 +55,7 @@ $string['precisionsuccess'] = 'Tikslumas buvo sėkmingai pakeistas';
 $string['updateprecision_help'] = 'Įveskite tikslumo atstumą, kuris nustato, kiek toli vartotojas gali būti nuo pradinės vietos';
 
 $string['submitlocationheading'] = 'Pateikite savo vietą GPS medžioklės žaidimui';
+$string['submitlocation'] = 'Pateikti vietą';
 $string['incorrectlocation'] = 'Neteisinga vieta, bandykite dar kartą';
 $string['nolocationset'] = 'Vieta nenustatyta';
 $string['correctlocation'] = 'Teisinga vieta, norėdami grįžti atgal, paspauskite atgal į pradžią';
