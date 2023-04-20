@@ -65,7 +65,6 @@ if (navigator.geolocation) {
         });
 
         mymap.setView(latlng, 18);
-        console.log("Latitude: " + latitude + ", Longitude: " + longitude);
 
         // send the clicked coordinates to php
         document.getElementById('userLatitudeCoords').value = latitude;

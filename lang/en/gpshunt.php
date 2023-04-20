@@ -38,6 +38,7 @@ $string['pluginadministration'] = 'Plugin administration';
 $string['modulenameicon'] = '<img src="'.$CFG->wwwroot.'/mod/gpshunt/pix/icon.svg" class="icon" alt="GPS icon" />';
 
 $string['play'] = 'Start game';
+$string['setlocation'] = 'Set GPS hunt location';
 $string['backtostart'] = 'Back to start';
 $string['backtoview'] = 'Back to view';
 $string['refreshlocation'] = 'Set location';
@@ -53,12 +54,15 @@ $string['updateprecision'] = 'Update precision';
 $string['precisionsuccess'] = 'Precision has been successfully changed';
 $string['updateprecision_help'] = 'Enter a precision distance that determines how far the user can be from the original location in meters';
 
+$string['submitlocationheading'] = 'Submit your location for GPS hunt game';
 $string['incorrectlocation'] = 'Incorrect location please try again';
+$string['nolocationset'] = 'No location is set';
 $string['correctlocation'] = 'Correct location press back to go back';
 $string['longitude'] = 'Longitude';
 
 $string['invalidinputnumeric'] = 'Invalid input. Longitude and latitude values must be numeric.';
-$string['invalidinputdegrees'] = 'Invalid input. Longitude must be between -180 and 180 degrees, latitude must be between -90 and 90 degrees, and max distance must be greater than 0 meters.';
+$string['invalidinputdegrees'] = 'Invalid input. Longitude must be between -180 and 180 degrees, latitude must be 
+between -90 and 90 degrees, and max distance must be greater than 0 meters.';
 $string['invalidinputparameters'] = 'Invalid input parameter(s).';
 $string['invalidgradevalue'] = 'Invalid grade value. Grade must be a number between 0 and 100.';
 $string['gradingerror'] = 'Error updating grade.';

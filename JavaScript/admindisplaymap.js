@@ -45,7 +45,6 @@ map.on('click', function(e) {
         map.removeLayer(marker);
     }
     marker = L.marker([lat, lng]).addTo(map);
-    console.log("You clicked the map at latitude: " + lat + " and longitude: " + lng);
 
     // set the clicked coordinates to the table cells
     document.getElementById('latitude').textContent = lat;

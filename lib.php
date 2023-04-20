@@ -223,13 +223,13 @@ function display_precision_submit_form($moduleinstance){
         'type' => 'submit',
         'name' => 'submit_precision',
         'value' => get_string('updateprecision', 'mod_gpshunt'),
-        'class' => 'btn btn-dark',
+        'class' => 'btn btn-primary',
         'style' => 'margin-right: 15px'
     );
 
     $wrapper_attributes = array(
         'class' => 'my-form-wrapper float-left',
-        'style' => 'width: 10%; margin-top: 20px;'
+        'style' => 'margin-top: 20px;'
     );
 
     $label_div_attributes = array(
@@ -276,7 +276,7 @@ function display_admin_map_form($moduleInstance, $cm, $PAGE){
     <form method="post" action="">
         <div id="map"></div>
         <br>
-        <input class="btn btn-dark" type="submit" value="<?php echo get_string('refreshlocation', 'mod_gpshunt'); ?>">
+        <input class="btn btn-primary" type="submit" value="<?php echo get_string('refreshlocation', 'mod_gpshunt'); ?>">
         <?php button_to_play($cm); ?>
         <?php     create_button_back_to_course($PAGE->course->id); ?>
         <input id="latitudeCoords" type="hidden" value="" name="latitudeCoords">
@@ -327,12 +327,14 @@ function display_user_map_form($PAGE){
         <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
         <script src="JavaScript/userdisplaymap.js"></script>
         <br>
-        <input class="btn btn-dark" type="submit" name="submit" value="Submit location">
+        <div id="user-buttons">
+        <input class="btn btn-primary" type="submit" name="submit" value="Submit location">
         <?php       create_button_back_to_course($PAGE->course->id);
         if (is_siteadmin()) {
             create_button_back_to_view($_GET['id']);
         }
         ?>
+        </div>
     </form>
     <?php
 }
@@ -343,7 +345,7 @@ function button_to_play($cm) {
     $url = new moodle_url('/mod/gpshunt/play.php', array('id' => $PAGE->cm->id));
     $link_attributes = array(
         'href' => $url->out(),
-        'class' => 'btn btn-dark',
+        'class' => 'btn btn-primary',
     );
 
     echo html_writer::start_tag('a', $link_attributes);
@@ -412,7 +414,7 @@ function create_button_back_to_course($courseid) {
     $url = new moodle_url('/course/view.php', array('id' => $courseid));
     $link_attributes = array(
         'href' => $url->out(),
-        'class' => 'btn btn-dark',
+        'class' => 'btn btn-primary',
     );
 
     echo html_writer::start_tag('a', $link_attributes);
@@ -426,7 +428,7 @@ function create_button_back_to_view($itemid) {
     $url = new moodle_url('/mod/gpshunt/view.php', array('id' => $itemid));
     $link_attributes = array(
         'href' => $url->out(),
-        'class' => 'btn btn-dark margin-top: 5px',
+        'class' => 'btn btn-primary margin-top: 5px',
         'style' => 'margin-left: 5px;',
         'id' => 'back-to-view'
     );

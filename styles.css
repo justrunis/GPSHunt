@@ -102,6 +102,22 @@
 #mapid{
     width: 800px;
     height: 500px;
+    margin: auto;
+}
+
+.page-heading {
+    text-align: center;
+}
+
+div#user-buttons > *{
+    margin: 10px;
+}
+div#user-buttons{
+    display:flex;
+    flex-wrap: wrap;
+    align-content: center;
+    justify-content: center;
+    align-items: center;
 }
 
 @media only screen and (max-width: 768px) {
@@ -112,8 +128,5 @@
     #mapid{
         max-width: 90vw;
         max-height: 90vw;
-    }
-    #back-to-view{
-        margin-top: 10px;
     }
 }

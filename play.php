@@ -107,10 +107,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['userLatitudeCoords']) 
 }
 echo $OUTPUT->header();
 
+echo $OUTPUT->heading(get_string('submitlocationheading', 'mod_gpshunt'), 2, 'page-heading');
+
+
+if ($moduleInstance->latitude == 0 and $moduleInstance->longitude == 0) {
+    echo '<div class="alert alert-danger">' . get_string('nolocationset', 'mod_gpshunt') . '</div>';
+}
+
 if(!has_user_located_correctly($DB, $USER, $moduleInstance)){
     if (isset($update) and $update->correctanswer == 0) {
         echo '<div class="alert alert-danger">' . get_string('incorrectlocation', 'mod_gpshunt') . '</div>';
     }
+
     display_user_map_form($PAGE);
 }
 else{

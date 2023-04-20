@@ -116,7 +116,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['precision'])) {
         echo "<div class='alert alert-danger' role='alert'>". $e->getMessage() ."</div>";
     }
 }
-
+echo $OUTPUT->heading(get_string('setlocation', 'mod_gpshunt'));
 display_admin_map_form($moduleInstance, $cm, $PAGE);
 display_precision_submit_form($moduleInstance);
 display_admin_map($moduleInstance);
