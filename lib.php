@@ -439,8 +439,8 @@ function create_button_back_to_view($itemid) {
     echo html_writer::end_tag('a');
 }
 
-function write_gpshunt_user_grade($moduleInstance, $USER, $PAGE, $rawgrade){
-
+function write_gpshunt_user_grade($moduleInstance, $USER, $PAGE, $rawgrade, $CFG){
+    require_once($CFG->dirroot . '\lib\gradelib.php');
     if (!is_object($moduleInstance) || !is_object($USER) || !is_object($PAGE)) {
         throw new InvalidArgumentException(get_string('invalidinputparameters','mod_gpshunt'));
     }
