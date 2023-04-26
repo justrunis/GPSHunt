@@ -15,7 +15,7 @@
         <FIELD NAME="introformat" TYPE="int" LENGTH="4" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="The format of the intro field."/>
         <FIELD NAME="latitude" TYPE="number" LENGTH="11" NOTNULL="true" DEFAULT="0" SEQUENCE="false" DECIMALS="8" COMMENT="Latitude of the answer location"/>
         <FIELD NAME="longitude" TYPE="number" LENGTH="11" NOTNULL="true" DEFAULT="0" SEQUENCE="false" DECIMALS="8" COMMENT="Longitude of the location"/>
-        <FIELD NAME="precision" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="15" SEQUENCE="false" COMMENT="Precision of how far a person can be from the original marker in meters"/>
+        <FIELD NAME="precisionvalue" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="15" SEQUENCE="false" COMMENT="Precision of how far a person can be from the original marker in meters"/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
